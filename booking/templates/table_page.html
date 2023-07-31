@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Бронирование авто</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<h2><a href="">Заполнить таблицу</a></h2>
+<figure class="table-container">
+    <table>
+        <caption style="font-size: 20px">Бронирование авто</caption>
+        <tbody>
+            <tr class="table-header">
+                <th>Дата</th>
+                <th>Авто</th>
+                <th>Инженер</th>
+                <th>Город</th>
+                <th>Время выезда</th>
+                <th>Время возврата</th>
+                <th>Комментарий</th>
+                <th>Подтверждение</th>
+            </tr>
+            {% for form in form_list %}
+            {{ f.0.errors }}
+            <tr>
+                <th>{{ form.1.date }}</th>
+                <th scope="row">{{ form.1.car }}</th>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <td>
+                        {% if form.1.engineer is not None %}
+                            {{ form.1.engineer }}
+                        {% endif %}
+                    </td>
+                    <td>{{ form.0.city }}</td>
+                    <td>{{ form.0.taking_time}}</td>
+                    <td>{{ form.0.return_time}}</td>
+                    <td>{{ form.0.comment}}</td>
+                    <td><button type="submit" name="{{ form.1.id }}">Применить</button></td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</figure>
+<div class="pagination">
+    <span class="step-links">
+        {% if form_list.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ form_list.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ form_list.number }} of {{ form_list.paginator.num_pages }}.
+        </span>
+
+        {% if form_list.has_next %}
+            <a href="?page={{ form_list.next_page_number }}">next</a>
+            <a href="?page={{ form_list.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+<!--{% for form in form_list %}-->
+<!--    <form action="" method="POST">-->
+<!--        {% csrf_token %}-->
+<!--        {{ form.date }} <br>-->
+<!--        {% for f in form %}-->
+<!--            {{ f }}-->
+<!--            <span style="color: red">{{ f.errors }}</span>-->
+<!--        {% endfor %}-->
+<!--        <button type="submit">Применить</button>-->
+<!--    </form>-->
+<!--{% endfor %}-->
+
+</body>
+</html>

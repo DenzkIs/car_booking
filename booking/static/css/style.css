@@ -1,0 +1,14 @@
+body{
+    background: #e7f1d8;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+table, tbody, td, th{
+    border: 1px solid black;
+    border-collapse: collapse;
+}
