@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
@@ -6,19 +7,23 @@ from .models import Car, CarNote
 from .forms import CarNoteForm
 
 
+@login_required
 def get_table_page(request):
-    HttpResponseRedirect('/?page=7')
     car_notes = CarNote.objects.select_related('car')
     form_list = []
     for note in car_notes:
         form = CarNoteForm(instance=note)
-        if request.method == 'POST' and str(note.id) in request.POST:
+        if (
+                request.method == 'POST'
+                and str(note.id) in request.POST
+                and CarNoteForm(request.POST, instance=note).is_valid()
+                and request.user.is_authenticated
+                and (note.engineer == '' or note.engineer == request.user.first_name)
+        ):
             form = CarNoteForm(request.POST, instance=note)
-            if form.is_valid():
-                form.save()
-                note.engineer = request.user.first_name
-                print(note.engineer)
-                note.save()
+            form.save()
+            note.engineer = request.user.first_name
+            note.save()
         form_list.append((form, note))
     paginator = Paginator(form_list, 21)
     page_number = request.GET.get('page')
@@ -27,10 +32,19 @@ def get_table_page(request):
         page = paginator.get_page(page_number)
     else:
         page = paginator.get_page(datetime.datetime.isocalendar(datetime.date.today()).week)
-    print(page_number)
     context = {'car_notes': car_notes, 'form_list': page}
 
     return render(request, template_name='table_page.html', context=context)
+
+
+def cancel_note(request, id):
+    note = CarNote.objects.get(id=id)
+    if note.engineer == request.user.first_name:
+        note.engineer = ''
+        note.city = ''
+        note.comment = ''
+        note.save()
+    return redirect('table_page')
 
 
 def create_car_notes(request):

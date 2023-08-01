@@ -8,7 +8,8 @@
 </head>
 <body>
 
-<h2><a href="">Заполнить таблицу</a></h2>
+<h2><a href=""></a></h2>
+<h1 style="color: darkgreen">Вы авторизованы как {{ user.first_name }}</h1>
 <figure class="table-container">
     <table>
         <caption style="font-size: 20px">Бронирование авто</caption>
@@ -39,7 +40,12 @@
                     <td>{{ form.0.taking_time}}</td>
                     <td>{{ form.0.return_time}}</td>
                     <td>{{ form.0.comment}}</td>
-                    <td><button type="submit" name="{{ form.1.id }}">Применить</button></td>
+                    <td>
+                        <button type="submit" name="{{ form.1.id }}">Применить</button>
+                        {% if user.first_name == form.1.engineer %}
+                            <a href="{% url 'cancel_note' form.1.id %}"> Отмена</a>
+                        {% endif %}
+                    </td>
                 </form>
             </tr>
             {% endfor %}
