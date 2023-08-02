@@ -24,33 +24,79 @@
                 <th>Комментарий</th>
                 <th>Подтверждение</th>
             </tr>
-            {% for form in form_list %}
-            {{ f.0.errors }}
-            <tr>
-                <th>{{ form.1.date }}</th>
-                <th scope="row">{{ form.1.car }}</th>
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <td>
-                        {% if form.1.engineer is not None %}
-                            {{ form.1.engineer }}
-                        {% endif %}
-                    </td>
-                    <td>{{ form.0.city }}</td>
-                    <td>{{ form.0.taking_time}}</td>
-                    <td>{{ form.0.return_time}}</td>
-                    <td>{{ form.0.comment}}</td>
-                    <td>
-                        <button type="submit" name="{{ form.1.id }}">Применить</button>
-                        {% if user.first_name == form.1.engineer %}
-                            <a href="{% url 'cancel_note' form.1.id %}"> Отмена</a>
-                        {% endif %}
-                    </td>
-                </form>
-            </tr>
-            {% endfor %}
         </tbody>
-
+        {% for form in form_list %}
+            <tbody>
+                <tr>
+                    {% if day_today == form.0.1.date %}
+                        <td rowspan="3" style="background: lemonchiffon">{{ form.0.1.date }}</td>
+                    {% else %}
+                        <td rowspan="3">{{ form.0.1.date }}</td>
+                    {% endif %}
+                    <td>{{ form.0.1.car }}</td>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <td>
+                            {% if form.0.1.engineer is not None %}
+                                {{ form.0.1.engineer }}
+                            {% endif %}
+                        </td>
+                        <td>{{ form.0.0.city }}</td>
+                        <td>{{ form.0.0.taking_time}}</td>
+                        <td>{{ form.0.0.return_time}}</td>
+                        <td>{{ form.0.0.comment}}</td>
+                        <td>
+                            <button type="submit" name="{{ form.0.1.id }}">Применить</button>
+                            {% if user.first_name == form.0.1.engineer %}
+                                <a href="{% url 'cancel_note' form.0.1.id %}"> Отмена</a>
+                            {% endif %}
+                        </td>
+                    </form>
+                </tr>
+                <tr>
+                    <td>{{ form.1.1.car }}</td>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <td>
+                            {% if form.1.1.engineer is not None %}
+                                {{ form.1.1.engineer }}
+                            {% endif %}
+                        </td>
+                        <td>{{ form.1.0.city }}</td>
+                        <td>{{ form.1.0.taking_time}}</td>
+                        <td>{{ form.1.0.return_time}}</td>
+                        <td>{{ form.1.0.comment}}</td>
+                        <td>
+                            <button type="submit" name="{{ form.1.1.id }}">Применить</button>
+                            {% if user.first_name == form.1.1.engineer %}
+                                <a href="{% url 'cancel_note' form.1.1.id %}"> Отмена</a>
+                            {% endif %}
+                        </td>
+                    </form>
+                </tr>
+                <tr>
+                    <td>{{ form.2.1.car }}</td>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <td>
+                            {% if form.2.1.engineer is not None %}
+                                {{ form.2.1.engineer }}
+                            {% endif %}
+                        </td>
+                        <td>{{ form.2.0.city }}</td>
+                        <td>{{ form.2.0.taking_time}}</td>
+                        <td>{{ form.2.0.return_time}}</td>
+                        <td>{{ form.2.0.comment}}</td>
+                        <td>
+                            <button type="submit" name="{{ form.2.1.id }}">Применить</button>
+                            {% if user.first_name == form.2.1.engineer %}
+                                <a href="{% url 'cancel_note' form.2.1.id %}"> Отмена</a>
+                            {% endif %}
+                        </td>
+                    </form>
+                </tr>
+            </tbody>
+        {% endfor %}
     </table>
 </figure>
 <div class="pagination">

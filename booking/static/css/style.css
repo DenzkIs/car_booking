@@ -8,7 +8,10 @@ body{
     box-sizing: border-box;
 }
 
-table, tbody, td, th{
+table, td, th{
     border: 1px solid black;
     border-collapse: collapse;
+}
+tbody{
+    border: 1.5px solid black;
 }

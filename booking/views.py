@@ -8,6 +8,7 @@ from .models import Car, CarNote
 from .forms import CarNoteForm
 
 
+
 @login_required
 def get_table_page(request):
     car_notes = CarNote.objects.select_related('car')
@@ -26,14 +27,17 @@ def get_table_page(request):
             note.engineer = request.user.first_name
             note.save()
         form_list.append((form, note))
-    paginator = Paginator(form_list, 21)
+    # группирую записи по 3 шт, чтобы отображать общую дату сразу на 3 машины
+    form_list_three = list(partition(3, form_list))
+    paginator = Paginator(form_list_three, 7)
     page_number = request.GET.get('page')
     # если первый переход на страницу - показать текущую неделю
     if page_number:
         page = paginator.get_page(page_number)
     else:
         page = paginator.get_page(datetime.datetime.isocalendar(datetime.date.today()).week)
-    context = {'car_notes': car_notes, 'form_list': page}
+    day_today = datetime.date.today()
+    context = {'car_notes': car_notes, 'form_list': page, 'day_today': day_today}
 
     return render(request, template_name='table_page.html', context=context)
 
