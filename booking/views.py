@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 import datetime
+from toolz import partition
 from .models import Car, CarNote
 from .forms import CarNoteForm
 
@@ -55,4 +56,23 @@ def create_car_notes(request):
         CarNote.objects.create(date=date, car=Car.objects.get(id=3))
     return redirect('table_page')
 
+
 # <h2><a href="{% url 'create_car_notes' %}">Заполнить таблицу</a></h2>
+
+def table_with_rowspan(request):
+    notes = list(partition(3, CarNote.objects.select_related('car')))
+    context = {'notes': notes}
+    # for n in notes:
+    #     for i in n:
+    #         print(i.date, i.car, i.engineer)
+    return render(request, template_name='table_with_rowspan.html', context=context)
+
+
+# from toolz import partition
+#
+# if __name__ == '__main__':
+#     l = list(range(1, 10))
+#     n = 3
+#
+#     chunks = list(partition(n, l))
+#     print(chunks)
