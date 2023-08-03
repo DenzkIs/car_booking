@@ -11,7 +11,18 @@ body{
 table, td, th{
     border: 1px solid black;
     border-collapse: collapse;
+    padding: 1px;
 }
-tbody{
-    border: 1.5px solid black;
+tbody:nth-child(odd) {
+  background-color: #bcd5b3;
+}
+input:hover{
+    background: #e7f1d8;
+    transition: 0.1s linear all;
+}
+tr:hover {
+    border: 2px solid black;
+    border-radius: 10px;
+    background: #dcf7e3;
+    transition: 0.1s linear all;
 }

@@ -29,9 +29,9 @@
             <tbody>
                 <tr>
                     {% if day_today == form.0.1.date %}
-                        <td rowspan="3" style="background: lemonchiffon">{{ form.0.1.date }}</td>
+                        <td rowspan="3" style="background: lemonchiffon">{{ form.0.1.date}}<br>{{ form.0.1.date|date:"l" }}</td>
                     {% else %}
-                        <td rowspan="3">{{ form.0.1.date }}</td>
+                        <td rowspan="3">{{ form.0.1.date }}<br>{{ form.0.1.date|date:"l" }}</td>
                     {% endif %}
                     <td>{{ form.0.1.car }}</td>
                     <form action="" method="POST">
