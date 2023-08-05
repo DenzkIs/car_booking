@@ -3,10 +3,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 import datetime
+import os
+import requests
 from toolz import partition
 from .models import Car, CarNote
 from .forms import CarNoteForm
 
+MY_TOKEN = os.environ.get('MY_TOKEN')
+NAV_URL = 'https://api.nav.by'
 
 
 @login_required
@@ -62,7 +66,7 @@ def create_car_notes(request):
 
 
 # <h2><a href="{% url 'create_car_notes' %}">Заполнить таблицу</a></h2>
-
+# тестовая таблица (будет удалена)
 def table_with_rowspan(request):
     notes = list(partition(3, CarNote.objects.select_related('car')))
     context = {'notes': notes}
@@ -72,11 +76,8 @@ def table_with_rowspan(request):
     return render(request, template_name='table_with_rowspan.html', context=context)
 
 
-# from toolz import partition
-#
-# if __name__ == '__main__':
-#     l = list(range(1, 10))
-#     n = 3
-#
-#     chunks = list(partition(n, l))
-#     print(chunks)
+def get_current_car_info(request):
+    nav_response = requests.get(f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
+    cars_info = nav_response.json()['root']['result']['items']
+    context = {'cars_info': cars_info}
+    return render(request, template_name='current_car_info.html', context=context)

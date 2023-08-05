@@ -10,6 +10,9 @@
 
 <h2><a href=""></a></h2>
 <h1 style="color: darkgreen">Вы авторизованы как {{ user.first_name }}</h1>
+<div>
+    <h3><a href="{% url 'current_car_info' %}">Текущая информация об авто</a></h3>
+</div>
 <figure class="table-container">
     <table>
         <caption style="font-size: 20px">Бронирование авто</caption>

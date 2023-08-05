@@ -1,5 +1,7 @@
 import datetime
 import time
+import requests
+import os
 
 
 # print(datetime.datetime.isoweekday(datetime.datetime.now()))
@@ -71,10 +73,26 @@ def check_speed(func):
 # print(chunks)
 
 # --- Ок
-from toolz import partition
+# from toolz import partition
+#
+# l = list(range(1, 9000000))
+# n = 3
+#
+# chunks = list(partition(n, l))
+# print(chunks)
 
-l = list(range(1, 9000000))
-n = 3
+# Проверка связи с api nav by
+MY_TOKEN = os.environ.get('MY_TOKEN')
 
-chunks = list(partition(n, l))
-print(chunks)
+NAV_URL = 'https://api.nav.by'
+
+response2 = requests.get(f"{NAV_URL}/info/integration.php?type=VEHICLE_LIST&token={MY_TOKEN}")
+for i in response2.json()['root']['result']['items']:
+    print(i)
+
+response3 = requests.get(f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
+for i in response3.json()['root']['result']['items']:
+    print(i['object_id'], i['object_name'], i['place'], 'Скорость:', i['speed'])
+
+
+

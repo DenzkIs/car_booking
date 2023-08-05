@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Текущая информация по авто</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+<table>
+  <caption><h3>Текушая информация по машинам</h3></caption>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Авто</th>
+      <th>Текущий адрес</th>
+      <th>Текущая скорость, км/ч</th>
+    </tr>
+  </thead>
+  {% for car in cars_info %}
+
+      <tbody>
+        <tr>
+          <td>{{ car.object_id }}</td>
+          <td>{{ car.object_name }}</td>
+          <td>{{ car.place }}</td>
+          <td>{{ car.speed }}</td>
+        </tr>
+      </tbody>
+
+  {% endfor %}
+</table>
+</body>
+</html>
