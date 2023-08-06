@@ -1,15 +1,7 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Текущая информация по авто</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
 <table>
-  <caption><h3>Текушая информация по машинам</h3></caption>
+  <caption><h3></h3></caption>
   <thead>
     <tr>
       <th>ID</th>
@@ -31,5 +23,4 @@
 
   {% endfor %}
 </table>
-</body>
-</html>
+{% endblock %}

@@ -55,7 +55,7 @@ def cancel_note(request, id):
         note.save()
     return redirect('table_page')
 
-
+# нужна для генерации дней на текущий год
 def create_car_notes(request):
     for day in range((datetime.date(2023, 12, 31) - datetime.date(2023, 1, 1)).days):
         date = datetime.date(2023, 1, 2) + datetime.timedelta(days=day)

@@ -1,21 +1,12 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Бронирование авто</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-
-<h2><a href=""></a></h2>
+{% extends 'base.html' %}
+{% block content %}
 <h1 style="color: darkgreen">Вы авторизованы как {{ user.first_name }}</h1>
 <div>
     <h3><a href="{% url 'current_car_info' %}">Текущая информация об авто</a></h3>
 </div>
 <figure class="table-container">
     <table>
-        <caption style="font-size: 20px">Бронирование авто</caption>
+        <caption style="font-size: 20px"></caption>
         <tbody>
             <tr class="table-header">
                 <th>Дата</th>
@@ -119,17 +110,21 @@
         {% endif %}
     </span>
 </div>
-<!--{% for form in form_list %}-->
-<!--    <form action="" method="POST">-->
-<!--        {% csrf_token %}-->
-<!--        {{ form.date }} <br>-->
-<!--        {% for f in form %}-->
-<!--            {{ f }}-->
-<!--            <span style="color: red">{{ f.errors }}</span>-->
-<!--        {% endfor %}-->
-<!--        <button type="submit">Применить</button>-->
-<!--    </form>-->
-<!--{% endfor %}-->
-
-</body>
-</html>
+<div class="pagination2">
+    {% if form_list.has_previous %}
+        <a class="btn btn-outline-primary mb-4" href="?page=1">Первая</a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.previous_page_number }}"><<</a>
+    {% endif %}
+    {% for num in form_list.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > form_list.number|add:'-3' and num < form_list.number|add:'3' %}
+            <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if form_list.has_next %}
+        <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.next_page_number }}">>></a>
+        <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.paginator.num_pages }}">Последняя</a>
+    {% endif %}
+</div>
+{% endblock %}

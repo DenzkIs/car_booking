@@ -17,12 +17,45 @@ tbody:nth-child(odd) {
   background-color: #bcd5b3;
 }
 input:hover{
-    background: #e7f1d8;
+    background: #dcf7e3;
     transition: 0.1s linear all;
 }
 tr:hover {
-    border: 2px solid black;
     border-radius: 10px;
     background: #dcf7e3;
     transition: 0.1s linear all;
 }
+#navbar ul {
+  display: none;
+  background-color: #bcd5b3;
+  position: absolute;
+  top: 100%;
+}
+#navbar li:hover ul { display: block; }
+#navbar, #navbar ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+#navbar {
+  height: 40px;
+  background-color: darkgreen;
+  padding-left: 25px;
+  min-width: 470px;
+}
+#navbar li {
+  float: left;
+  position: relative;
+  height: 100%;
+}
+#navbar li a {
+    display: block;
+    padding: 6px 15px;
+    width: auto;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+}
+#navbar ul li { float: none; }
+#navbar li:hover { background-color: #bcd5b3; }
+#navbar ul li:hover { background-color: darkgreen; }

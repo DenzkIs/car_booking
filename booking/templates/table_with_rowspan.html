@@ -1,13 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Тестовая таблица 1</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <h1>Здесь должна быть правильная таблица с объединёнными ячейками по вертикали</h1>
+{% extends 'base.html' %}
+{% block content %}
+<h1>Здесь должна быть правильная таблица с объединёнными ячейками по вертикали</h1>
 <table>
   <caption><h3>Бронирование авто</h3></caption>
   <thead>
@@ -35,9 +28,7 @@
           <td>{{ note.2.car }}</td>
           <td>3</td>
         </tr>
-    </tbody>
-
+      </tbody>
   {% endfor %}
 </table>
-</body>
-</html>
+{% endblock %}
