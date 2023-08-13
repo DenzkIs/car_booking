@@ -25,6 +25,8 @@ def get_table_page(request):
                 and CarNoteForm(request.POST, instance=note).is_valid()
                 and request.user.is_authenticated
                 and (note.engineer == '' or note.engineer == request.user.first_name)
+                and (request.user.profile.access == 'sm' or request.user.profile.access == 'ad' or request.user.username == 'admin')
+
         ):
             form = CarNoteForm(request.POST, instance=note)
             form.save()
@@ -33,13 +35,13 @@ def get_table_page(request):
         form_list.append((form, note))
     # группирую записи по 3 шт, чтобы отображать общую дату сразу на 3 машины
     form_list_three = list(partition(3, form_list))
-    paginator = Paginator(form_list_three, 7)
+    paginator = Paginator(form_list_three, 14)
     page_number = request.GET.get('page')
     # если первый переход на страницу - показать текущую неделю
     if page_number:
         page = paginator.get_page(page_number)
     else:
-        page = paginator.get_page(datetime.datetime.isocalendar(datetime.date.today()).week)
+        page = paginator.get_page(round(datetime.datetime.isocalendar(datetime.date.today()).week / 2))
     day_today = datetime.date.today()
     context = {'car_notes': car_notes, 'form_list': page, 'day_today': day_today}
 
