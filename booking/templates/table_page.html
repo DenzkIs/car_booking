@@ -4,127 +4,129 @@
 <div>
     <h3><a href="{% url 'current_car_info' %}">Текущая информация об авто</a></h3>
 </div>
-<figure class="table-container">
-    <table>
-        <caption style="font-size: 20px"></caption>
-        <tbody>
-            <tr class="table-header">
-                <th>Дата</th>
-                <th>Авто</th>
-                <th>Инженер</th>
-                <th>Город</th>
-                <th>Время выезда</th>
-                <th>Время возврата</th>
-                <th>Комментарий</th>
-                <th>Подтверждение</th>
-            </tr>
-        </tbody>
-        {% for form in form_list %}
+<div style="">
+    <figure class="table-container">
+        <table>
+            <caption style="font-size: 20px"></caption>
             <tbody>
-                <tr>
-                    {% if day_today == form.0.1.date %}
-                        <td rowspan="3" style="background: lemonchiffon">{{ form.0.1.date}}<br>{{ form.0.1.date|date:"l" }}</td>
-                    {% else %}
-                        <td rowspan="3">{{ form.0.1.date }}<br>{{ form.0.1.date|date:"l" }}</td>
-                    {% endif %}
-                    <td>{{ form.0.1.car }}</td>
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <td>
-                            {% if form.0.1.engineer is not None %}
-                                {{ form.0.1.engineer }}
-                            {% endif %}
-                        </td>
-                        <td>{{ form.0.0.city }}</td>
-                        <td>{{ form.0.0.taking_time}}</td>
-                        <td>{{ form.0.0.return_time}}</td>
-                        <td>{{ form.0.0.comment}}</td>
-                        <td>
-                            <button type="submit" name="{{ form.0.1.id }}">Применить</button>
-                            {% if user.first_name == form.0.1.engineer %}
-                                <a href="{% url 'cancel_note' form.0.1.id %}"> Отмена</a>
-                            {% endif %}
-                        </td>
-                    </form>
-                </tr>
-                <tr>
-                    <td>{{ form.1.1.car }}</td>
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <td>
-                            {% if form.1.1.engineer is not None %}
-                                {{ form.1.1.engineer }}
-                            {% endif %}
-                        </td>
-                        <td>{{ form.1.0.city }}</td>
-                        <td>{{ form.1.0.taking_time}}</td>
-                        <td>{{ form.1.0.return_time}}</td>
-                        <td>{{ form.1.0.comment}}</td>
-                        <td>
-                            <button type="submit" name="{{ form.1.1.id }}">Применить</button>
-                            {% if user.first_name == form.1.1.engineer %}
-                                <a href="{% url 'cancel_note' form.1.1.id %}"> Отмена</a>
-                            {% endif %}
-                        </td>
-                    </form>
-                </tr>
-                <tr>
-                    <td>{{ form.2.1.car }}</td>
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <td>
-                            {% if form.2.1.engineer is not None %}
-                                {{ form.2.1.engineer }}
-                            {% endif %}
-                        </td>
-                        <td>{{ form.2.0.city }}</td>
-                        <td>{{ form.2.0.taking_time}}</td>
-                        <td>{{ form.2.0.return_time}}</td>
-                        <td>{{ form.2.0.comment}}</td>
-                        <td>
-                            <button type="submit" name="{{ form.2.1.id }}">Применить</button>
-                            {% if user.first_name == form.2.1.engineer %}
-                                <a href="{% url 'cancel_note' form.2.1.id %}"> Отмена</a>
-                            {% endif %}
-                        </td>
-                    </form>
+                <tr class="table-header">
+                    <th>Дата</th>
+                    <th>Авто</th>
+                    <th>Инженер</th>
+                    <th>Город</th>
+                    <th>Время выезда</th>
+                    <th>Время возврата</th>
+                    <th>Комментарий</th>
+                    <th>Подтверждение</th>
                 </tr>
             </tbody>
-        {% endfor %}
-    </table>
-</figure>
-<div class="pagination">
-    <span class="step-links">
-        {% if form_list.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ form_list.previous_page_number }}">previous</a>
-        {% endif %}
+            {% for form in form_list %}
+                <tbody>
+                    <tr>
+                        {% if day_today == form.0.1.date %}
+                            <td rowspan="3" style="background: lemonchiffon">{{ form.0.1.date}}<br>{{ form.0.1.date|date:"l" }}</td>
+                        {% else %}
+                            <td rowspan="3">{{ form.0.1.date }}<br>{{ form.0.1.date|date:"l" }}</td>
+                        {% endif %}
+                        <td>{{ form.0.1.car }}</td>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <td>
+                                {% if form.0.1.engineer is not None %}
+                                    {{ form.0.1.engineer }}
+                                {% endif %}
+                            </td>
+                            <td>{{ form.0.0.city }}</td>
+                            <td>{{ form.0.0.taking_time}}</td>
+                            <td>{{ form.0.0.return_time}}</td>
+                            <td>{{ form.0.0.comment}}</td>
+                            <td>
+                                <button type="submit" name="{{ form.0.1.id }}">Применить</button>
+                                {% if user.first_name == form.0.1.engineer %}
+                                    <a href="{% url 'cancel_note' form.0.1.id %}"> Отмена</a>
+                                {% endif %}
+                            </td>
+                        </form>
+                    </tr>
+                    <tr>
+                        <td>{{ form.1.1.car }}</td>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <td>
+                                {% if form.1.1.engineer is not None %}
+                                    {{ form.1.1.engineer }}
+                                {% endif %}
+                            </td>
+                            <td>{{ form.1.0.city }}</td>
+                            <td>{{ form.1.0.taking_time}}</td>
+                            <td>{{ form.1.0.return_time}}</td>
+                            <td>{{ form.1.0.comment}}</td>
+                            <td>
+                                <button type="submit" name="{{ form.1.1.id }}">Применить</button>
+                                {% if user.first_name == form.1.1.engineer %}
+                                    <a href="{% url 'cancel_note' form.1.1.id %}"> Отмена</a>
+                                {% endif %}
+                            </td>
+                        </form>
+                    </tr>
+                    <tr>
+                        <td>{{ form.2.1.car }}</td>
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <td>
+                                {% if form.2.1.engineer is not None %}
+                                    {{ form.2.1.engineer }}
+                                {% endif %}
+                            </td>
+                            <td>{{ form.2.0.city }}</td>
+                            <td>{{ form.2.0.taking_time}}</td>
+                            <td>{{ form.2.0.return_time}}</td>
+                            <td>{{ form.2.0.comment}}</td>
+                            <td>
+                                <button type="submit" name="{{ form.2.1.id }}">Применить</button>
+                                {% if user.first_name == form.2.1.engineer %}
+                                    <a href="{% url 'cancel_note' form.2.1.id %}"> Отмена</a>
+                                {% endif %}
+                            </td>
+                        </form>
+                    </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </figure>
+    <div class="pagination">
+        <span class="step-links">
+            {% if form_list.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ form_list.previous_page_number }}">previous</a>
+            {% endif %}
 
-        <span class="current">
-            Page {{ form_list.number }} of {{ form_list.paginator.num_pages }}.
+            <span class="current">
+                Page {{ form_list.number }} of {{ form_list.paginator.num_pages }}.
+            </span>
+
+            {% if form_list.has_next %}
+                <a href="?page={{ form_list.next_page_number }}">next</a>
+                <a href="?page={{ form_list.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
         </span>
-
+    </div>
+    <div class="pagination2">
+        {% if form_list.has_previous %}
+            <a class="btn btn-outline-primary mb-4" href="?page=1">Первая</a>
+            <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.previous_page_number }}"><<</a>
+        {% endif %}
+        {% for num in form_list.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > form_list.number|add:'-3' and num < form_list.number|add:'3' %}
+                <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
         {% if form_list.has_next %}
-            <a href="?page={{ form_list.next_page_number }}">next</a>
-            <a href="?page={{ form_list.paginator.num_pages }}">last &raquo;</a>
+            <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.next_page_number }}">>></a>
+            <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.paginator.num_pages }}">Последняя</a>
         {% endif %}
-    </span>
-</div>
-<div class="pagination2">
-    {% if form_list.has_previous %}
-        <a class="btn btn-outline-primary mb-4" href="?page=1">Первая</a>
-        <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.previous_page_number }}"><<</a>
-    {% endif %}
-    {% for num in form_list.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% elif num > form_list.number|add:'-3' and num < form_list.number|add:'3' %}
-            <a class="btn btn-outline-primary mb-4" href="?page={{ num }}">{{ num }}</a>
-        {% endif %}
-    {% endfor %}
-    {% if form_list.has_next %}
-        <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.next_page_number }}">>></a>
-        <a class="btn btn-outline-primary mb-4" href="?page={{ form_list.paginator.num_pages }}">Последняя</a>
-    {% endif %}
+    </div>
 </div>
 {% endblock %}

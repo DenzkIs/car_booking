@@ -86,13 +86,22 @@ MY_TOKEN = os.environ.get('MY_TOKEN')
 
 NAV_URL = 'https://api.nav.by'
 
-response2 = requests.get(f"{NAV_URL}/info/integration.php?type=VEHICLE_LIST&token={MY_TOKEN}")
-for i in response2.json()['root']['result']['items']:
-    print(i)
+# response2 = requests.get(f"{NAV_URL}/info/integration.php?type=VEHICLE_LIST&token={MY_TOKEN}")
+# for i in response2.json()['root']['result']['items']:
+#     print(i)
 
-response3 = requests.get(f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
-for i in response3.json()['root']['result']['items']:
-    print(i['object_id'], i['object_name'], i['place'], 'Скорость:', i['speed'])
+# response3 = requests.get(f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
+# for i in response3.json()['root']['result']['items']:
+#     print(i['object_id'], i['object_name'], i['place'], 'Скорость:', i['speed'])
+st = datetime.datetime.now()
+sts = str(st)[:-7]
+fn = st - datetime.timedelta(days=5)
+fns = str(fn)[:-7]
+print(str(st)[:-7], str(fn)[:-7])
+# узнаем пробег по GPS по каждому авто
+response4 = requests.get(f"{NAV_URL}/info/integration.php?type=OBJECT_STAT_DATA&token={MY_TOKEN}&from={fns}&to={sts}")
+for i in response4.json()['root']['result']['items']:
+    print(round(i['distance_gps']/1000))
 
 
 
