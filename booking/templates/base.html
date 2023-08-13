@@ -12,17 +12,24 @@
 <nav>
     <div>
         <ul id="navbar">
-          <li><a href="#">Главная</a></li>
-          <li><a href="{% url 'table_page' %}">Бронирование</a></li>
-          <li><a href="#">Новости</a></li>
-          <li><a href="#">Контакты</a>
+            <li><a href="#">Главная</a></li>
+            <li><a href="{% url 'table_page' %}">Бронирование</a></li>
+            <li><a href="#">Новости</a></li>
+            <li><a href="#">Контакты</a>
             <ul>
               <li><a href="#">Адрес</a></li>
               <li><a href="#">Телефон</a></li>
               <li><a href="#">Email</a></li>
             </ul>
-          </li>
-          <li><a href="#">О нас</a></li>
+            </li>
+            <li><a href="#">О нас</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'profile' %}">Профиль</a></li>
+                <li><a href="{% url 'logout' %}">Выход</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Войти</a></li>
+                <li><a href="{% url 'register' %}">Регистрация</a></li>
+            {% endif %}
         </ul>
     </div>
 </nav>

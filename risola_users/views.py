@@ -11,8 +11,12 @@ def register(request):
             form.save()
             username = form.cleaned_data.get("username")
             messages.success(request, f"Аккаунт создан для {username}!")
-            return redirect("table_page")
+            return redirect("login")
     else:
         form = UserRegisterForm()
     context = {'form': form}
     return render(request, template_name='register.html', context=context)
+
+
+def profile(request):
+    return render(request, template_name='profile.html')

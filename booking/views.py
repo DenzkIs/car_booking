@@ -7,7 +7,7 @@ import os
 import requests
 from toolz import partition
 from .models import Car, CarNote
-from .forms import CarNoteForm
+from .forms import CarNoteForm, CarServiceInfoForm
 
 MY_TOKEN = os.environ.get('MY_TOKEN')
 NAV_URL = 'https://api.nav.by'
@@ -55,6 +55,7 @@ def cancel_note(request, id):
         note.save()
     return redirect('table_page')
 
+
 # нужна для генерации дней на текущий год
 def create_car_notes(request):
     for day in range((datetime.date(2023, 12, 31) - datetime.date(2023, 1, 1)).days):
@@ -77,7 +78,19 @@ def table_with_rowspan(request):
 
 
 def get_current_car_info(request):
-    nav_response = requests.get(f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
+    nav_response = requests.get(
+        f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
     cars_info = nav_response.json()['root']['result']['items']
     context = {'cars_info': cars_info}
     return render(request, template_name='current_car_info.html', context=context)
+
+
+def get_car_service(request):
+    form = CarServiceInfoForm()
+    if request.method == 'POST' and request.FILES:
+        form = CarServiceInfoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+
+    context = {'form': form}
+    return render(request, template_name='car_service.html', context=context)

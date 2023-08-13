@@ -21,3 +21,10 @@ class CarNote(models.Model):
     def __str__(self):
         return f'{self.date} - {self.engineer} - {self.car}'
 
+
+class CarServiceInfo(models.Model):
+    title = models.CharField(max_length=255)
+    report = models.FileField(upload_to='reports')
+
+    def __str__(self):
+        return self.title
