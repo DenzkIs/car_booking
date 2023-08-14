@@ -96,3 +96,21 @@ def get_car_service(request):
 
     context = {'form': form}
     return render(request, template_name='car_service.html', context=context)
+
+
+def get_car_day_info(request):
+    date = datetime.date(2023, 8, 10)
+    time_start = datetime.time(0, 0, 0)
+    time_finish = datetime.time(23, 59, 59)
+    response = requests.get(
+        f"{NAV_URL}/info/integration.php?type=OBJECT_STAT_DATA&token={MY_TOKEN}&from={date}{' '}{time_start}&to={date}{' '}{time_finish}")
+    rj = response.json()['root']['result']['items']
+    nav_info = sorted(rj, key=lambda c: c['object_id'])[1:]
+    cars = CarNote.objects.filter(date=date)
+    bd_info = sorted(cars, key=lambda c: c.car.object_id)
+    for nav, bd in zip(nav_info, bd_info):
+        bd.km_per_day = round(nav['distance_gps'] / 1000)
+        bd.save()
+        print(bd.km_per_day, bd.car)
+
+    return render(request, template_name='car_day_info.html')

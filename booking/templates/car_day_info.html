@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<table>
+  <caption><h3></h3></caption>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Авто</th>
+      <th>Текущий адрес</th>
+      <th>Текущая скорость, км/ч</th>
+    </tr>
+  </thead>
+
+
+    <tbody>
+      <tr>
+        <td>{{ car.object_id }}</td>
+        <td>{{ car.object_name }}</td>
+        <td>{{ car.place }}</td>
+        <td>{{ car.speed }}</td>
+      </tr>
+    </tbody>
+
+
+</table>
+{% endblock %}

@@ -4,7 +4,10 @@ from .views import (get_table_page,
                     cancel_note,
                     table_with_rowspan,
                     get_current_car_info,
-                    get_car_service)
+                    get_car_service,
+                    get_car_day_info,
+
+                    )
 
 urlpatterns = [
     path('', get_table_page, name='table_page'),
@@ -13,6 +16,7 @@ urlpatterns = [
     path('table_with_rowspan/', table_with_rowspan, name='table_with_rowspan'),
     path('current_car_info/', get_current_car_info, name='current_car_info'),
     path('car_service/', get_car_service, name='car_service'),
+    path('car_day_info/', get_car_day_info, name='car_day_info'),
 
 
 ]
