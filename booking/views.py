@@ -6,8 +6,10 @@ import datetime
 import os
 import requests
 from toolz import partition
+from .telegram_bot import say_in_chat
 from .models import Car, CarNote
 from .forms import CarNoteForm, CarServiceInfoForm
+
 
 MY_TOKEN = os.environ.get('MY_TOKEN')
 NAV_URL = 'https://api.nav.by'
@@ -25,13 +27,15 @@ def get_table_page(request):
                 and CarNoteForm(request.POST, instance=note).is_valid()
                 and request.user.is_authenticated
                 and (note.engineer == '' or note.engineer == request.user.first_name)
-                and (request.user.profile.access == 'sm' or request.user.profile.access == 'ad' or request.user.username == 'admin')
+                and (
+                request.user.profile.access == 'sm' or request.user.profile.access == 'ad' or request.user.username == 'admin')
 
         ):
             form = CarNoteForm(request.POST, instance=note)
             form.save()
             note.engineer = request.user.first_name
             note.save()
+            say_in_chat(note)
         form_list.append((form, note))
     # группирую записи по 3 шт, чтобы отображать общую дату сразу на 3 машины
     form_list_three = list(partition(3, form_list))
@@ -44,13 +48,13 @@ def get_table_page(request):
         page = paginator.get_page(datetime.datetime.isocalendar(datetime.date.today()).week)
     day_today = datetime.date.today()
     context = {'car_notes': car_notes, 'form_list': page, 'day_today': day_today}
-
     return render(request, template_name='table_page.html', context=context)
 
 
 def cancel_note(request, id):
     note = CarNote.objects.get(id=id)
     if note.engineer == request.user.first_name:
+        say_in_chat(note, 'Отмена записи:')
         note.engineer = ''
         note.city = ''
         note.comment = ''
@@ -99,7 +103,7 @@ def get_car_service(request):
 
 
 def get_car_day_info(request):
-    date = datetime.date(2023, 8, 10)
+    date = datetime.date(2023, 8, 17)
     time_start = datetime.time(0, 0, 0)
     time_finish = datetime.time(23, 59, 59)
     response = requests.get(
