@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 import datetime
@@ -9,15 +9,17 @@ from toolz import partition
 from .telegram_bot import say_in_chat
 from .models import Car, CarNote
 from .forms import CarNoteForm, CarServiceInfoForm
+from dotenv import dotenv_values
 
-
-MY_TOKEN = os.environ.get('MY_TOKEN')
+# MY_TOKEN = os.environ.get('MY_TOKEN')
 NAV_URL = 'https://api.nav.by'
+env_keys = dotenv_values()
+MY_TOKEN = env_keys.get('MY_TOKEN')
 
 
 @login_required
 def get_table_page(request):
-    car_notes = CarNote.objects.select_related('car')
+    car_notes = CarNote.objects.select_related('car').order_by('id')
     form_list = []
     for note in car_notes:
         form = CarNoteForm(instance=note)
@@ -70,6 +72,11 @@ def create_car_notes(request):
         CarNote.objects.create(date=date, car=Car.objects.get(id=2))
         CarNote.objects.create(date=date, car=Car.objects.get(id=3))
     return redirect('table_page')
+
+
+def delete_all_car_notes(request):
+    CarNote.objects.all().delete()
+    return HttpResponse('Все записи удалены')
 
 
 # <h2><a href="{% url 'create_car_notes' %}">Заполнить таблицу</a></h2>
