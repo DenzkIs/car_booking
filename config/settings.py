@@ -168,3 +168,8 @@ try:
     from .local_settings import *
 except ImportError:
     from .prod_settings import *
+
+if DEBUG:
+    INTERNAL_IPS.append('192.168.100.39')
+    print(INTERNAL_IPS)
+
