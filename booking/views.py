@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
+from django.contrib.auth import get_user_model
 import datetime
 import os
 import requests
@@ -13,7 +14,9 @@ from dotenv import dotenv_values
 # from . import utils
 import time
 from .utils import request_car_day_info
+import csv
 
+User = get_user_model()
 
 # MY_TOKEN = os.environ.get('MY_TOKEN')
 NAV_URL = 'https://api.nav.by'
@@ -173,3 +176,28 @@ def insert_car_info(request):
 
     print('База заполнена')
     return HttpResponse(f'{datetime.datetime.now()} - выполнено')
+
+
+def insert_from_csv(request):
+    notes = CarNote.objects.filter(car__brand='Рено').order_by('date')
+    with open('D:\Downloads_chrome\Dokker.csv', 'r', newline='') as file:
+        reader = csv.reader(file, delimiter=',')
+        header = next(reader)
+        for row in reader:
+            date_string = row[0]
+            city = row[2]
+            engineer = row[3]
+            day, month, year = date_string.split('.')
+            normal_date = datetime.date(day=int(day), month=int(month), year=int(year))
+            for note in notes:
+                if note.date == normal_date:
+                    note.city = city.capitalize()
+                    if engineer.capitalize() == 'Выбор':
+                        engineer = ''
+                    note.engineer = engineer.capitalize()
+                    note.save()
+                    print(note)
+                    continue
+        print('База заполнена')
+
+    return HttpResponse('готово')
