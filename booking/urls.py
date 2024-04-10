@@ -7,6 +7,7 @@ from .views import (get_table_page,
                     get_car_service,
                     get_car_day_info,
                     delete_all_car_notes,
+                    insert_car_info,
                     )
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     path('current_car_info/', get_current_car_info, name='current_car_info'),
     path('car_service/', get_car_service, name='car_service'),
     path('car_day_info/', get_car_day_info, name='car_day_info'),
+    path('insert_data/', insert_car_info, name='insert_car_info'),
 
 
 ]

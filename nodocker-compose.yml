@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+
+    db:
+        image: postgres:15
+        container_name: den_postgres
+        volumes:
+            # ~/.pg/pg_data/den:
+            - postgres_data:/var/lib/postgresql/data
+        environment:
+            - RISOLA_PG=fR3950q
+            - SQL_DATABASE=risoladb
+            - SQL_USER=risolapg
+        env_file:
+            - .env
+
+    web_app:
+        build:
+            context: .
+        image: den_docker
+        depends_on:
+            - db
+        volumes:
+            - static_volume:/den/static
+            - media_volume:/den/media
+        env_file:
+            - .env
+        command: >
+            - bash -c "./manage.py collectstatic --noinput && ./migrate && gunicorn -b 0.0.0.0:8000 config.wsgi:application"
+
+    nginx:
+        build:
+            dockerfile: ./Dockerfile
+            context: ./docker/nginx
+        container_name: den_nginx
+        image: den_nginx
+        volumes:
+            - static_volume:/den/static
+            - media_volume:/den/media
+        depends_on:
+            - web_app
+        ports:
+            - "${NGINX_EXTERNAL_PORT}:80"
+
+volumes:
+    static_volume:
+    media_volume:
+    postgres_data:

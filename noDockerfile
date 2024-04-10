@@ -1,0 +1,24 @@
+FROM python:3.11
+
+SHELL ["/bin/bash", "-c"]
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN pip install --upgrade pip
+
+RUN apt update && apt -qy install build-essential gettext gcc libpq-dev cron openssh-client locales vim
+
+RUN useradd -rms /bin/bash den && chmod 777 /opt /run
+
+WORKDIR /den
+
+RUN mkdir /den/static && mkdir /den/media && chown -R den:den /den && chmod 755 /den
+
+COPY --chown=den:den . .
+
+RUN pip install -r requirements.txt
+
+USER den
+
+CMD ["gunicorn", "-b", "0.0.0.0:8001", "config.wsgi:application"]

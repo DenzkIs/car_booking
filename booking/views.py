@@ -10,6 +10,10 @@ from .telegram_bot import say_in_chat
 from .models import Car, CarNote
 from .forms import CarNoteForm, CarServiceInfoForm
 from dotenv import dotenv_values
+# from . import utils
+import time
+from .utils import request_car_day_info
+
 
 # MY_TOKEN = os.environ.get('MY_TOKEN')
 NAV_URL = 'https://api.nav.by'
@@ -19,6 +23,7 @@ MY_TOKEN = env_keys.get('MY_TOKEN')
 
 @login_required
 def get_table_page(request):
+    print(time.asctime())
     car_notes = CarNote.objects.select_related('car').order_by('id')
     form_list = []
     for note in car_notes:
@@ -66,8 +71,8 @@ def cancel_note(request, id):
 
 # нужна для генерации дней на текущий год
 def create_car_notes(request):
-    for day in range((datetime.date(2023, 12, 31) - datetime.date(2023, 1, 1)).days):
-        date = datetime.date(2023, 1, 2) + datetime.timedelta(days=day)
+    for day in range((datetime.date(2025, 1, 6) - datetime.date(2024, 1, 1)).days):
+        date = datetime.timedelta(days=day) + datetime.date(2024, 1, 1)
         CarNote.objects.create(date=date, car=Car.objects.get(id=1))
         CarNote.objects.create(date=date, car=Car.objects.get(id=2))
         CarNote.objects.create(date=date, car=Car.objects.get(id=3))
@@ -110,12 +115,13 @@ def get_car_service(request):
 
 
 def get_car_day_info(request):
-    date = datetime.date(2023, 8, 17)
+    date = datetime.date(2024, 4, 5)
     time_start = datetime.time(0, 0, 0)
     time_finish = datetime.time(23, 59, 59)
     response = requests.get(
         f"{NAV_URL}/info/integration.php?type=OBJECT_STAT_DATA&token={MY_TOKEN}&from={date}{' '}{time_start}&to={date}{' '}{time_finish}")
     rj = response.json()['root']['result']['items']
+    print(rj)
     nav_info = sorted(rj, key=lambda c: c['object_id'])[1:]
     cars = CarNote.objects.filter(date=date)
     bd_info = sorted(cars, key=lambda c: c.car.object_id)
@@ -125,3 +131,9 @@ def get_car_day_info(request):
         print(bd.km_per_day, bd.car)
 
     return render(request, template_name='car_day_info.html')
+
+
+def insert_car_info(request):
+    print(request_car_day_info())
+    print('---------------' * 10)
+    return HttpResponse(f'{datetime.datetime.now()} - выполнено')

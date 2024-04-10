@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  webapp:
+    restart: always
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+#  db:
+#    image: postgres:15
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data/
+#    # Устанавливаем переменные окружения среды в контейнере с базой данных
+#    restart: always
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      - POSTGRES_DB=postgres
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=postgres
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+#    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+  worker:
+    restart: always
+    build:
+      context: .
+    volumes:
+      - ./files_cel:/app/files_cel
+    command: celery -A config worker -l INFO
+    depends_on:
+      - redis
+
+  flower:
+    build:
+      context: .
+    ports:
+      - "5555:5555"
+    command: celery -A config.celery.app flower
+    depends_on:
+      - redis
+
+  beat:
+    build:
+      context: .
+    command: celery -A config beat -l INFO
+    depends_on:
+      - redis
