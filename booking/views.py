@@ -134,6 +134,42 @@ def get_car_day_info(request):
 
 
 def insert_car_info(request):
-    print(request_car_day_info())
-    print('---------------' * 10)
+    """
+    Заполняет базу данных с начала записей до текущей даты
+    :param request:
+    :return:
+    """
+    processed_date = None
+    day_nav_info = None
+    notes = CarNote.objects.all().order_by('date')
+    # notes_2 = []
+    # for n in notes:
+    #     if n.date == datetime.date.today():
+    #         notes_2.append(n)
+    for note in notes:
+        if note.date > datetime.date.today():
+            break
+        if note.date == processed_date:
+            for info in day_nav_info:
+                if info.get('object_id') == str(note.car.object_id):
+                    note.distance_gps = round(float(info.get('distance_gps')) / 1000, 2)
+                    note.run_time_seconds = info.get('run_time')
+                    note.run_time_str = info.get('run_time_str')
+                    note.max_speed = info.get('max_speed')
+                    note.save()
+        else:
+            processed_date = note.date
+            day_nav_info = request_car_day_info(processed_date)
+            print('запрос сделан')
+            for info in day_nav_info:
+                if info.get('object_id') == str(note.car.object_id):
+                    note.distance_gps = round(float(info.get('distance_gps')) / 1000, 2)
+                    note.run_time_seconds = info.get('run_time')
+                    note.run_time_str = info.get('run_time_str')
+                    note.max_speed = info.get('max_speed')
+                    note.save()
+            time.sleep(5)
+        print(note.date, '------', note.distance_gps)
+
+    print('База заполнена')
     return HttpResponse(f'{datetime.datetime.now()} - выполнено')
