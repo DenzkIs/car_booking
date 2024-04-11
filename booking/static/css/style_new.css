@@ -1,0 +1,21 @@
+.logo_info_wrapper {
+    height: 40px;
+}
+
+.header_nav {
+    background: #65c741;
+    height: 40px;
+}
+
+.header_nav_list {
+
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 8px 0;
+}
+
+.header_nav_item a {
+    color: white;
+    font-size: 20px;
+}

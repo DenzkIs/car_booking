@@ -201,3 +201,7 @@ def insert_from_csv(request):
         print('База заполнена')
 
     return HttpResponse('готово')
+
+
+def get_base_template(request):
+    return render(request, template_name='base_template.html')
