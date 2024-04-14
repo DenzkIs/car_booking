@@ -10,6 +10,24 @@ def print_time():
     print(time.asctime())
 
 
+def grouping_by_day(s_list):
+    list_triple = []
+    inner_time = None
+    counter = 0
+    for i in s_list:
+        if not list_triple:
+            list_triple.append([i])
+            inner_time = i[1].date
+        else:
+            if i[1].date == inner_time:
+                list_triple[counter].append(i)
+            else:
+                list_triple.append([i])
+                counter += 1
+                inner_time = i[1].date
+    return list_triple
+
+
 def request_car_day_info(db_date):
     i = 0
     # date_start = datetime.date.today() - datetime.timedelta(days=i)

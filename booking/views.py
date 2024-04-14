@@ -13,7 +13,7 @@ from .forms import CarNoteForm, CarServiceInfoForm
 from dotenv import dotenv_values
 # from . import utils
 import time
-from .utils import request_car_day_info
+from .utils import request_car_day_info, grouping_by_day
 import csv
 
 User = get_user_model()
@@ -26,8 +26,8 @@ MY_TOKEN = env_keys.get('MY_TOKEN')
 
 @login_required
 def get_table_page(request):
-    print(time.asctime())
-    car_notes = CarNote.objects.select_related('car').order_by('id')
+    # print(time.asctime())
+    car_notes = CarNote.objects.select_related('car').order_by('date')
     form_list = []
     for note in car_notes:
         form = CarNoteForm(instance=note)
@@ -48,7 +48,8 @@ def get_table_page(request):
             say_in_chat(note)
         form_list.append((form, note))
     # группирую записи по 3 шт, чтобы отображать общую дату сразу на 3 машины
-    form_list_three = list(partition(3, form_list))
+    # form_list_three = list(partition(3, form_list))  # чуть быстрее, но в случае удаления машины, полетит верстка
+    form_list_three = grouping_by_day(form_list)
     paginator = Paginator(form_list_three, 7)
     page_number = request.GET.get('page')
     # если первый переход на страницу - показать текущую неделю
@@ -205,3 +206,12 @@ def insert_from_csv(request):
 
 def get_base_template(request):
     return render(request, template_name='base_template.html')
+
+
+def grid_table(request):
+    start = time.time()
+    notes = CarNote.objects.all().select_related('car').order_by('date')
+    group_notes = grouping_by_day(notes)
+    print(time.time() - start)
+    context = {'group_notes': group_notes}
+    return render(request, template_name='base_template.html', context=context)

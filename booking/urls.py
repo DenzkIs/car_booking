@@ -8,6 +8,7 @@ from .views import (get_table_page,
                     get_car_day_info,
                     delete_all_car_notes,
                     get_base_template,
+                    grid_table,
                     insert_car_info,
                     insert_from_csv,
 
@@ -23,6 +24,8 @@ urlpatterns = [
     path('car_service/', get_car_service, name='car_service'),
     path('car_day_info/', get_car_day_info, name='car_day_info'),
     path('base/', get_base_template, name='get_base_template'),
+    path('grid/', grid_table, name='grid_table'),
+
     # path('insert_data/', insert_car_info, name='insert_car_info'),  # использовать для заполнения БД из nav.by
     # path('insert_from_csv/', insert_from_csv, name='insert_from_csv'),  # использовать для заполнения БД из csv
 
