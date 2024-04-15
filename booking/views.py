@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
@@ -60,6 +62,42 @@ def get_table_page(request):
     day_today = datetime.date.today()
     context = {'car_notes': car_notes, 'form_list': page, 'day_today': day_today}
     return render(request, template_name='table_page.html', context=context)
+
+
+def get_grid_page(request):
+    car_notes = CarNote.objects.select_related('car').order_by('date', 'car__brand')
+    form_list = []
+    for note in car_notes:
+        form = CarNoteForm(instance=note)
+        if (
+                request.method == 'POST'
+                and str(note.id) in request.POST
+                and CarNoteForm(request.POST, instance=note).is_valid()
+                and request.user.is_authenticated
+                and (note.engineer == '' or note.engineer == request.user.first_name)
+                and (
+                request.user.profile.access == 'sm' or request.user.profile.access == 'ad' or request.user.username == 'admin')
+
+        ):
+            form = CarNoteForm(request.POST, instance=note)
+            form.save()
+            note.engineer = request.user.first_name
+            note.save()
+            say_in_chat(note)
+        form_list.append((form, note))
+    # группирую записи по 3 шт, чтобы отображать общую дату сразу на 3 машины
+    # form_list_three = list(partition(3, form_list))  # чуть быстрее, но в случае удаления машины, полетит верстка
+    form_list_three = grouping_by_day(form_list)
+    paginator = Paginator(form_list_three, 7)
+    page_number = request.GET.get('page')
+    # если первый переход на страницу - показать текущую неделю
+    if page_number:
+        page = paginator.get_page(page_number)
+    else:
+        page = paginator.get_page(datetime.datetime.isocalendar(datetime.date.today()).week)
+    day_today = datetime.date.today()
+    context = {'car_notes': car_notes, 'form_list': page, 'day_today': day_today}
+    return render(request, template_name='base_template.html', context=context)
 
 
 def cancel_note(request, id):

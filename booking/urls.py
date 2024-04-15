@@ -9,6 +9,7 @@ from .views import (get_table_page,
                     delete_all_car_notes,
                     get_base_template,
                     grid_table,
+                    get_grid_page,
                     insert_car_info,
                     insert_from_csv,
 
@@ -16,6 +17,7 @@ from .views import (get_table_page,
 
 urlpatterns = [
     path('', get_table_page, name='table_page'),
+    path('grid_page/', get_grid_page, name='grid_page'),
     path('create/', create_car_notes, name='create_car_notes'),
     path('delete/', delete_all_car_notes, name='delete_all_car_notes'),
     path('cancel_note/<int:id>/', cancel_note, name='cancel_note'),
