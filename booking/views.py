@@ -68,14 +68,14 @@ def get_table_page(request):
 def get_two_tables_page(request):
     today = datetime.date.today()
     weekday = datetime.datetime.isocalendar(today).weekday
-    print(today, 'число сегодня')
-    print(datetime.datetime.isocalendar(datetime.date.today()).week, 'текущая неделя')
-    print(weekday, 'день недели')
+    # print(today, 'число сегодня')
+    # print(datetime.datetime.isocalendar(datetime.date.today()).week, 'текущая неделя')
+    # print(weekday, 'день недели')
     # 6 недель
     start_day = today - datetime.timedelta(days=weekday + 13)
-    print(start_day, 'начало отсчета')
+    # print(start_day, 'начало отсчета')
     end_day = start_day + datetime.timedelta(days=41)
-    print(end_day, 'конец отсчета')
+    # print(end_day, 'конец отсчета')
 
     car_notes = CarNote.objects.select_related('car').filter(date__range=(start_day, end_day)).order_by('date', 'car__brand')
 
@@ -228,7 +228,7 @@ def insert_car_info(request):
     """
     Заполняет базу данных с начала записей до текущей даты
     :param request:
-    :return:
+    :return None:
     """
     processed_date = None
     day_nav_info = None

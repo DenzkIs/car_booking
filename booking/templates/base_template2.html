@@ -36,7 +36,7 @@
                                     <a href="#">Статистика</a>
                                 </li>
                                 <li class="header_nav_item">
-                                    <a href="#">Админ</a>
+                                    <a href="{% url 'admin:index' %}">Админ</a>
                                 </li>
                             </ul>
                         </div>
@@ -63,70 +63,50 @@
                                                 <th>Подтверждение</th>
                                             </tr>
                                         </thead>
-                                        {% for form in form_list_first %}
+                                        {% for day in form_list_first %}
                                             <tbody class="table_day">
-                                                <tr class="table_day_row_one">
-                                                    {% if day_today == form.0.1.date %}
-                                                        <td class="table_day_date" rowspan="3" style="background: lemonchiffon; border: 2px black solid">{{ form.0.1.date}}<br>{{ form.0.1.date|date:"l" }}</td>
-                                                    {% else %}
-                                                        <td rowspan="3">{{ form.0.1.date }}<br>{{ form.0.1.date|date:"l" }}</td>
-                                                    {% endif %}
-                                                    <td>{{ form.0.1.car }}</td>
-                                                    <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        <td>
-                                                            {% if form.0.1.engineer is not None %}
-                                                                {{ form.0.1.engineer }}
+                                                {% for car_note in day %}
+                                                    <tr class="table_day_row_one table_day_row">
+                                                        {% if car_note == day.0 %}
+                                                            {% if day_today == car_note.1.date %}
+                                                                <td class="table_day_date_today" rowspan="3">
+                                                                    <div>
+                                                                        <p>{{ car_note.1.date}}</p>
+                                                                        <p>{{ car_note.1.date|date:"l" }}</p>
+                                                                    </div>
+                                                                </td>
+                                                            {% else %}
+                                                                <td class="table_day_date" rowspan="3">
+                                                                    {{ car_note.1.date }}
+                                                                    {{ car_note.1.date|date:"l" }}
+                                                                </td>
                                                             {% endif %}
-                                                        </td>
-                                                        <td class="table_day_form">{{ form.0.0.city }}</td>
-                                                        <td>{{ form.0.0.comment}}</td>
-                                                        <td>
-                                                            <button type="submit" name="{{ form.0.1.id }}">Применить</button>
-                                                            {% if user.first_name == form.0.1.engineer %}
-                                                                <a href="{% url 'cancel_note' form.0.1.id %}"> Отмена</a>
-                                                            {% endif %}
-                                                        </td>
-                                                    </form>
-                                                </tr>
-                                                <tr class="table_day_row_two">
-                                                    <td>{{ form.1.1.car }}</td>
-                                                    <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        <td>
-                                                            {% if form.1.1.engineer is not None %}
-                                                                {{ form.1.1.engineer }}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ form.1.0.city }}</td>
-                                                        <td>{{ form.1.0.comment}}</td>
-                                                        <td>
-                                                            <button type="submit" name="{{ form.1.1.id }}">Применить</button>
-                                                            {% if user.first_name == form.1.1.engineer %}
-                                                                <a href="{% url 'cancel_note' form.1.1.id %}"> Отмена</a>
-                                                            {% endif %}
-                                                        </td>
-                                                    </form>
-                                                </tr>
-                                                <tr class="table_day_row_three">
-                                                    <td>{{ form.2.1.car }}</td>
-                                                    <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        <td>
-                                                            {% if form.2.1.engineer is not None %}
-                                                                {{ form.2.1.engineer }}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ form.2.0.city }}</td>
-                                                        <td>{{ form.2.0.comment}}</td>
-                                                        <td>
-                                                            <button type="submit" name="{{ form.2.1.id }}">Применить</button>
-                                                            {% if user.first_name == form.2.1.engineer %}
-                                                                <a href="{% url 'cancel_note' form.2.1.id %}"> Отмена</a>
-                                                            {% endif %}
-                                                        </td>
-                                                    </form>
-                                                </tr>
+                                                        {% endif %}
+                                                        <td>{{ car_note.1.car }}</td>
+                                                        <form action="" method="POST">
+                                                            {% csrf_token %}
+                                                            <td>
+                                                                {% if car_note.1.engineer is not None %}
+                                                                    {{ car_note.1.engineer }}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="table_day_form">{{ car_note.0.city }}</td>
+                                                            <td>{{ car_note.0.comment}}</td>
+                                                            <td>
+                                                                {% if not car_note.1.engineer %}
+                                                                    <button class="apply_button" type="submit" name="{{ car_note.1.id }}">Применить</button>
+                                                                {% endif %}
+                                                                {% if user.first_name == car_note.1.engineer %}
+                                                                    <div class="change_cancel">
+                                                                        <button class="change_button" type="submit" name="{{ car_note.1.id }}">Изменить</button>
+                                                                        <a class="cancel_button" href="{% url 'cancel_note' car_note.1.id %}"><span>Отмена</span></a>
+                                                                    </div>
+
+                                                                {% endif %}
+                                                            </td>
+                                                        </form>
+                                                    </tr>
+                                                {% endfor %}
                                             </tbody>
                                         {% endfor %}
                                     </table>
@@ -144,70 +124,50 @@
                                                 <th>Подтверждение</th>
                                             </tr>
                                         </thead>
-                                        {% for form in form_list_second %}
+                                        {% for day in form_list_second %}
                                             <tbody class="table_day">
-                                                <tr class="table_day_row_one">
-                                                    {% if day_today == form.0.1.date %}
-                                                        <td class="table_day_date" rowspan="3" style="background: lemonchiffon">{{ form.0.1.date}}<br>{{ form.0.1.date|date:"l" }}</td>
-                                                    {% else %}
-                                                        <td rowspan="3">{{ form.0.1.date }}<br>{{ form.0.1.date|date:"l" }}</td>
-                                                    {% endif %}
-                                                    <td>{{ form.0.1.car }}</td>
-                                                    <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        <td>
-                                                            {% if form.0.1.engineer is not None %}
-                                                                {{ form.0.1.engineer }}
+                                                {% for car_note in day %}
+                                                    <tr class="table_day_row_one table_day_row">
+                                                        {% if car_note == day.0 %}
+                                                            {% if day_today == car_note.1.date %}
+                                                                <td class="table_day_date_today" rowspan="3">
+                                                                    <div>
+                                                                        <p>{{ car_note.1.date}}</p>
+                                                                        <p>{{ car_note.1.date|date:"l" }}</p>
+                                                                    </div>
+                                                                </td>
+                                                            {% else %}
+                                                                <td class="table_day_date" rowspan="3">
+                                                                    {{ car_note.1.date }}
+                                                                    {{ car_note.1.date|date:"l" }}
+                                                                </td>
                                                             {% endif %}
-                                                        </td>
-                                                        <td class="table_day_form">{{ form.0.0.city }}</td>
-                                                        <td>{{ form.0.0.comment}}</td>
-                                                        <td>
-                                                            <button type="submit" name="{{ form.0.1.id }}">Применить</button>
-                                                            {% if user.first_name == form.0.1.engineer %}
-                                                                <a href="{% url 'cancel_note' form.0.1.id %}"> Отмена</a>
-                                                            {% endif %}
-                                                        </td>
-                                                    </form>
-                                                </tr>
-                                                <tr class="table_day_row_two">
-                                                    <td>{{ form.1.1.car }}</td>
-                                                    <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        <td>
-                                                            {% if form.1.1.engineer is not None %}
-                                                                {{ form.1.1.engineer }}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ form.1.0.city }}</td>
-                                                        <td>{{ form.1.0.comment}}</td>
-                                                        <td>
-                                                            <button type="submit" name="{{ form.1.1.id }}">Применить</button>
-                                                            {% if user.first_name == form.1.1.engineer %}
-                                                                <a href="{% url 'cancel_note' form.1.1.id %}"> Отмена</a>
-                                                            {% endif %}
-                                                        </td>
-                                                    </form>
-                                                </tr>
-                                                <tr class="table_day_row_three">
-                                                    <td>{{ form.2.1.car }}</td>
-                                                    <form action="" method="POST">
-                                                        {% csrf_token %}
-                                                        <td>
-                                                            {% if form.2.1.engineer is not None %}
-                                                                {{ form.2.1.engineer }}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>{{ form.2.0.city }}</td>
-                                                        <td>{{ form.2.0.comment}}</td>
-                                                        <td>
-                                                            <button type="submit" name="{{ form.2.1.id }}">Применить</button>
-                                                            {% if user.first_name == form.2.1.engineer %}
-                                                                <a href="{% url 'cancel_note' form.2.1.id %}"> Отмена</a>
-                                                            {% endif %}
-                                                        </td>
-                                                    </form>
-                                                </tr>
+                                                        {% endif %}
+                                                        <td>{{ car_note.1.car }}</td>
+                                                        <form action="" method="POST">
+                                                            {% csrf_token %}
+                                                            <td>
+                                                                {% if car_note.1.engineer is not None %}
+                                                                    {{ car_note.1.engineer }}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td class="table_day_form">{{ car_note.0.city }}</td>
+                                                            <td>{{ car_note.0.comment}}</td>
+                                                            <td>
+                                                                {% if not car_note.1.engineer %}
+                                                                    <button class="apply_button" type="submit" name="{{ car_note.1.id }}">Применить</button>
+                                                                {% endif %}
+                                                                {% if user.first_name == car_note.1.engineer %}
+                                                                    <div class="change_cancel">
+                                                                        <button class="change_button" type="submit" name="{{ car_note.1.id }}">Изменить</button>
+                                                                        <a class="cancel_button" href="{% url 'cancel_note' car_note.1.id %}"><span>Отмена</span></a>
+                                                                    </div>
+
+                                                                {% endif %}
+                                                            </td>
+                                                        </form>
+                                                    </tr>
+                                                {% endfor %}
                                             </tbody>
                                         {% endfor %}
                                     </table>
