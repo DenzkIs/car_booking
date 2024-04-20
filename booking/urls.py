@@ -10,6 +10,7 @@ from .views import (get_table_page,
                     get_base_template,
                     grid_table,
                     get_grid_page,
+                    get_two_tables_page,
                     insert_car_info,
                     insert_from_csv,
 
@@ -17,6 +18,7 @@ from .views import (get_table_page,
 
 urlpatterns = [
     path('', get_table_page, name='table_page'),
+    path('double/', get_two_tables_page, name='two_tables_page'),
     path('grid_page/', get_grid_page, name='grid_page'),
     path('create/', create_car_notes, name='create_car_notes'),
     path('delete/', delete_all_car_notes, name='delete_all_car_notes'),

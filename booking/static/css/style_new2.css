@@ -1,0 +1,61 @@
+.logo_info_wrapper {
+    height: 40px;
+}
+
+.header_nav {
+    background: #65c741;
+    height: 40px;
+    margin-bottom: 15px;
+}
+
+.header_nav_list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 8px 0;
+}
+
+.header_nav_item a {
+    color: white;
+    font-size: 20px;
+}
+.table_day:nth-child(odd) {
+    background-color: #eed3c1;
+}
+.table_day:nth-child(even) {
+    background-color: #c4ae9f;
+}
+.table_day:hover {
+    background-color: darkgoldenrod;
+}
+.table_day_date {
+    background: #dcf7e3;
+}
+.table-container {
+    display: flex;
+}
+
+.table_day td:hover {
+    background-color: deeppink;
+}
+
+td input:hover{
+    background-color: deeppink;
+    border: black 1px solid;
+}
+
+.two_tables {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+
+}
+
+td input {
+    width: 150px;
+    height: 100%;
+}
+td {
+    height: 30px;
+}
+

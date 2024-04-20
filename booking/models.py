@@ -9,6 +9,7 @@ class Car(models.Model):
     last_maintenance_mileage = models.FloatField(default=0, verbose_name='Пробег при последнем ТО, км')
     maintenance_frequency = models.FloatField(default=15000, verbose_name='Частота ТО, км')
 
+
     def __str__(self):
         return self.brand
 
