@@ -14,3 +14,8 @@ class CarServiceInfoForm(forms.ModelForm):
     class Meta:
         model = CarServiceInfo
         fields = '__all__'
+
+
+class ChooseTimeRange(forms.Form):
+    start = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
+    finish = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))

@@ -9,9 +9,9 @@ import datetime
 import os
 import requests
 from toolz import partition
-from .telegram_bot import say_in_chat
+from .telegram_bot import say_in_chat, mileage_warning
 from .models import Car, CarNote
-from .forms import CarNoteForm, CarServiceInfoForm
+from .forms import CarNoteForm, CarServiceInfoForm, ChooseTimeRange
 from dotenv import dotenv_values
 # from . import utils
 import time
@@ -77,7 +77,8 @@ def get_two_tables_page(request):
     end_day = start_day + datetime.timedelta(days=41)
     # print(end_day, 'конец отсчета')
 
-    car_notes = CarNote.objects.select_related('car').filter(date__range=(start_day, end_day)).order_by('date', 'car__brand')
+    car_notes = CarNote.objects.select_related('car').filter(date__range=(start_day, end_day)).order_by('date',
+                                                                                                        'car__brand')
 
     form_list = []
     for note in car_notes:
@@ -109,7 +110,8 @@ def get_two_tables_page(request):
     else:
         page = paginator.get_page(2)
     day_today = datetime.date.today()
-    context = {'car_notes': car_notes, 'form_list': page,'form_list_first': page[:7], 'form_list_second': page[7:], 'day_today': day_today}
+    context = {'car_notes': car_notes, 'form_list': page, 'form_list_first': page[:7], 'form_list_second': page[7:],
+               'day_today': day_today}
     return render(request, template_name='base_template2.html', context=context)
 
 
@@ -171,7 +173,7 @@ def create_car_notes(request):
 
 
 def delete_all_car_notes(request):
-    CarNote.objects.all().delete()
+    CarNote.objects.all()  # .delete()
     return HttpResponse('Все записи удалены')
 
 
@@ -187,11 +189,17 @@ def table_with_rowspan(request):
 
 
 def get_current_car_info(request):
-    nav_response = requests.get(
-        f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
-    cars_info = nav_response.json()['root']['result']['items']
-    context = {'cars_info': cars_info}
-    return render(request, template_name='current_car_info.html', context=context)
+    try:
+        nav_response = requests.get(
+            f"{NAV_URL}/info/integration.php?type=CURRENT_POSITION&token={MY_TOKEN}&get_address=true")
+        cars_info = nav_response.json()['root']['result']['items']
+        context = {'cars_info': cars_info}
+        # for note in CarNote.objects.all().order_by('date').filter(date__gte=datetime.date(2024, 4, 11)):
+        #     print(note.date)
+        return render(request, template_name='current_car_info.html', context=context)
+    except requests.exceptions.ConnectionError:
+        print('Ошибка подключения к серверу')
+        return redirect('two_tables_page')
 
 
 def get_car_service(request):
@@ -232,7 +240,7 @@ def insert_car_info(request):
     """
     processed_date = None
     day_nav_info = None
-    notes = CarNote.objects.all().order_by('date')
+    notes = CarNote.objects.all().order_by('date')  # .filter(date__gte=datetime.date(2024, 4, 11))
     # notes_2 = []
     # for n in notes:
     #     if n.date == datetime.date.today():
@@ -259,7 +267,7 @@ def insert_car_info(request):
                     note.run_time_str = info.get('run_time_str')
                     note.max_speed = info.get('max_speed')
                     note.save()
-            time.sleep(5)
+            time.sleep(1)
         print(note.date, '------', note.distance_gps)
 
     print('База заполнена')
@@ -267,8 +275,8 @@ def insert_car_info(request):
 
 
 def insert_from_csv(request):
-    notes = CarNote.objects.filter(car__brand='Рено').order_by('date')
-    with open('D:\Downloads_chrome\Dokker.csv', 'r', newline='') as file:
+    notes = CarNote.objects.filter(car__brand='Джили').order_by('date')
+    with open('D:\Downloads_chrome\Geely.csv', 'r', newline='') as file:
         reader = csv.reader(file, delimiter=',')
         header = next(reader)
         for row in reader:
@@ -291,10 +299,38 @@ def insert_from_csv(request):
     return HttpResponse('готово')
 
 
+def get_statistic(request):
+    if request.method == "POST":
+        form = ChooseTimeRange(request.POST)
+        if form.is_valid():
+            start = form.cleaned_data.get('start')
+            finish = form.cleaned_data.get('finish')
+            denis = CarNote.objects.filter(engineer='Денис')
+            kostya = CarNote.objects.filter(engineer='Костя')
+            andrei = CarNote.objects.filter(engineer='Андрей')
+            misha = CarNote.objects.filter(engineer='Миша')
+            km_denis, km_kostya, km_andrei, km_misha = 0, 0, 0, 0
+            for note in denis:
+                km_denis += note.distance_gps
+            for note in kostya:
+                km_kostya += note.distance_gps
+            for note in andrei:
+                km_andrei += note.distance_gps
+            for note in misha:
+                km_misha += note.distance_gps
+            context = {'form': form, 'km_denis': km_denis, 'km_kostya': km_kostya, 'km_andrei': km_andrei, 'km_misha': km_misha}
+            return render(request, template_name='statistic.html', context=context)
+    else:
+        form = ChooseTimeRange()
+    context = {'form': form}
+    return render(request, template_name='statistic.html', context=context)
+
+
 def get_base_template(request):
     return render(request, template_name='base_template.html')
 
 
+# =============================================
 def grid_table(request):
     start = time.time()
     notes = CarNote.objects.all().select_related('car').order_by('date')
@@ -302,3 +338,48 @@ def grid_table(request):
     print(time.time() - start)
     context = {'group_notes': group_notes}
     return render(request, template_name='base_template.html', context=context)
+
+
+def test_celery_daily_task(request):
+    i = 2
+    date_start = datetime.date.today() - datetime.timedelta(days=i)
+    print(f'Инфа за {date_start}')
+    date_finish = datetime.date.today() + datetime.timedelta(days=1) - datetime.timedelta(days=i)
+    time_start = datetime.time(3, 0, 0)
+    time_finish = datetime.time(2, 59, 59)
+    notes = CarNote.objects.filter(date=date_start)
+    try:
+        response = requests.get(
+            f"{NAV_URL}/info/integration.php?type=OBJECT_STAT_DATA&token={MY_TOKEN}&from={date_start}{' '}{time_start}&to={date_finish}{' '}{time_finish}")
+        response_json = response.json()['root']['result']['items']
+        for note in notes:
+            for info in response_json:
+                if info.get('object_id') == str(note.car.object_id):
+                    note.distance_gps = round(float(info.get('distance_gps')) / 1000, 2)
+                    note.run_time_seconds = info.get('run_time')
+                    note.run_time_str = info.get('run_time_str')
+                    note.max_speed = info.get('max_speed')
+                    note.save()
+                    print(note.distance_gps)
+    except requests.exceptions.ConnectionError:
+        print('Не удалось подключиться к серверу')
+    return HttpResponse('Все ок')
+
+
+def test_refresh_mileage(request):
+    date = datetime.date.today() - datetime.timedelta(days=3)
+    notes = CarNote.objects.filter(date=date).select_related('car')
+    for note in notes:
+        wrote_day = note.car.mileage_included_day
+        if wrote_day is None or True:  # date > wrote_day:
+            current_mileage = note.car.current_mileage
+            note.car.current_mileage = round(current_mileage + note.distance_gps, 2)
+            note.car.mileage_included_day = date
+            note.car.save()
+            km_do_to = note.car.last_maintenance_mileage + note.car.maintenance_frequency - note.car.current_mileage
+            if km_do_to < 2000:
+                print(f'До следующего TO {note.car.brand} осталось {km_do_to} км !!!')
+                mileage_warning(note.car.brand, km_do_to)
+                time.sleep(3)
+    print([note.car.current_mileage for note in notes])
+    return HttpResponse('Все ок')

@@ -21,6 +21,8 @@ class Profile(models.Model):
     access = models.CharField(max_length=2, choices=ACCESS_CHOICES, verbose_name='Уровень доступа', default='rm')
     show_weeks = models.IntegerField(choices=WeeksChoices.choices, verbose_name='Отображать недель',
                                      default=WeeksChoices.ONE_WEEK)
+    text_color = models.CharField(max_length=100, default='black')
+    background_color = models.CharField(max_length=100, default='white')
 
     def save(self, **kwargs):
         super().save(**kwargs)

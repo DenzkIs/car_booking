@@ -6,9 +6,11 @@ class Car(models.Model):
     brand = models.CharField(max_length=100)
     object_id = models.IntegerField(default=0, db_index=True, verbose_name='object_id в системе nav.by')
     current_mileage = models.FloatField(default=0, verbose_name='Текущий пробег, км')
+    mileage_included_day = models.DateField(verbose_name='Последний день, учтенный в текущем пробеге', null=True, blank=True)
     last_maintenance_mileage = models.FloatField(default=0, verbose_name='Пробег при последнем ТО, км')
     maintenance_frequency = models.FloatField(default=15000, verbose_name='Частота ТО, км')
-
+    text_color = models.CharField(max_length=100, default='black')
+    background_color = models.CharField(max_length=100, default='white')
 
     def __str__(self):
         return self.brand
@@ -24,7 +26,7 @@ class CarNote(models.Model):
     comment = models.CharField(max_length=255, blank=True, null=True)
     distance_gps = models.FloatField(default=0, verbose_name='Пробег за день, км (distance_gps)')
     run_time_seconds = models.IntegerField(default=0, verbose_name='Время езды, с (run_time)')
-    run_time_str = models.CharField(max_length=100, default=0,verbose_name='Время езды, ч. мин. (run_time_str)')
+    run_time_str = models.CharField(max_length=100, default=0, verbose_name='Время езды, ч. мин. (run_time_str)')
     max_speed = models.IntegerField(default=0, verbose_name='Максимальная скорость, км/ч')
 
     def __str__(self):

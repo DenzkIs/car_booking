@@ -36,4 +36,9 @@ def say_in_chat(note: CarNote, message=''):
                          text=f'*{DAY[note.date.weekday()]}* {note.date}\n{note.car} - {note.city}\n{note.engineer}',
                          parse_mode='Markdown')
 
+
 # bot.polling(none_stop=True, interval=0)
+def mileage_warning(brand, km):
+    bot.send_message(chat_id='-1001977048993',
+                     text=f'До следующего TO *{brand}*\nосталось *{km:0.0f} км* !!!',
+                     parse_mode='Markdown')

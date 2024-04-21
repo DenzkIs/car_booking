@@ -20,8 +20,16 @@ app.autodiscover_tasks()
 # celery beat task
 
 app.conf.beat_schedule = {
-    'request_day_km': {
-        'task': 'booking.tasks.request_car_day_info',
-        'schedule': crontab(minute='2', hour='19')
+    # 'request_day_km': {
+    #     'task': 'booking.tasks.request_car_day_info',
+    #     'schedule': crontab(minute='35', hour='16')
+    # },
+    'request_and_insert_day_mileage': {
+        'task': 'booking.tasks.request_and_insert_day_mileage',
+        'schedule': crontab(minute='5', hour='3')
     },
+    'add_day_mileage_to_car': {
+        'task': 'booking.tasks.add_day_mileage_to_car',
+        'schedule': crontab(minute='1', hour='9')
+    }
 }
