@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from .models import CarNote, CarServiceInfo
 
@@ -17,5 +19,6 @@ class CarServiceInfoForm(forms.ModelForm):
 
 
 class ChooseTimeRange(forms.Form):
-    start = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
-    finish = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
+    day_today = datetime.date.today()
+    start = forms.DateField(widget=forms.TextInput(attrs={'type': 'date', 'value': "2024-01-01"}), label='От')
+    finish = forms.DateField(widget=forms.TextInput(attrs={'type': 'date', 'value': day_today}), label='До')

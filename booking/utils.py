@@ -46,6 +46,7 @@ def request_car_day_info(db_date):
     # for j in rj:
     #     print(j['distance_gps'] / 1000)
 
+
 def request_and_insert_day_mileage():
     i = 2
     date_start = datetime.date.today() - datetime.timedelta(days=i)

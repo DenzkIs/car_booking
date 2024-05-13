@@ -1,5 +1,4 @@
 from pprint import pprint
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
@@ -240,7 +239,7 @@ def insert_car_info(request):
     """
     processed_date = None
     day_nav_info = None
-    notes = CarNote.objects.all().order_by('date')  # .filter(date__gte=datetime.date(2024, 4, 11))
+    notes = CarNote.objects.all().order_by('date').filter(date__gte=datetime.date(2024, 4, 11))
     # notes_2 = []
     # for n in notes:
     #     if n.date == datetime.date.today():
@@ -275,27 +274,43 @@ def insert_car_info(request):
 
 
 def insert_from_csv(request):
-    notes = CarNote.objects.filter(car__brand='Джили').order_by('date')
-    with open('D:\Downloads_chrome\Geely.csv', 'r', newline='') as file:
-        reader = csv.reader(file, delimiter=',')
-        header = next(reader)
-        for row in reader:
-            date_string = row[0]
-            city = row[2]
-            engineer = row[3]
-            day, month, year = date_string.split('.')
-            normal_date = datetime.date(day=int(day), month=int(month), year=int(year))
-            for note in notes:
-                if note.date == normal_date:
-                    note.city = city.capitalize()
-                    if engineer.capitalize() == 'Выбор':
-                        engineer = ''
-                    note.engineer = engineer.capitalize()
-                    note.save()
-                    print(note)
-                    continue
-        print('База заполнена')
-
+    path_to_dir = 'D:\Downloads_chrome\cars'
+    csv_car_list = os.listdir(path_to_dir)
+    notes_list = []
+    car_name = ''
+    for car in csv_car_list:
+        # print(path_to_dir + '\\' + car)
+        if car == 'Авто и коммандировки - Geely.csv':
+            car_name = 'Джили'
+        if car == 'Авто и коммандировки - Renault Dokker.csv':
+            car_name = 'Рено'
+        if car == 'Авто и коммандировки - VW Polo.csv':
+            car_name = 'Фольксваген'
+        if not car_name:
+            break
+        notes = CarNote.objects.filter(car__brand=car_name).order_by('date')
+        with open(path_to_dir + '\\' + car, 'r', newline='') as file:
+            reader = csv.reader(file, delimiter=',')
+            header = next(reader)
+            for row in reader:
+                date_string = row[0]
+                city = row[2]
+                engineer = row[3]
+                day, month, year = date_string.split('.')
+                normal_date = datetime.date(day=int(day), month=int(month), year=int(year))
+                for note in notes:
+                    if note.date == normal_date:
+                        note.city = city.capitalize()
+                        if engineer.capitalize() == 'Выбор':
+                            engineer = ''
+                        note.engineer = engineer.capitalize()
+                        notes_list.append(note)
+                        continue
+        if car_name:
+            CarNote.objects.bulk_update(notes_list, ["engineer", "city"])
+            print('База заполнена')
+        else:
+            print('В папке нет ожидаемых файлов CSV')
     return HttpResponse('готово')
 
 
@@ -305,10 +320,10 @@ def get_statistic(request):
         if form.is_valid():
             start = form.cleaned_data.get('start')
             finish = form.cleaned_data.get('finish')
-            denis = CarNote.objects.filter(engineer='Денис')
-            kostya = CarNote.objects.filter(engineer='Костя')
-            andrei = CarNote.objects.filter(engineer='Андрей')
-            misha = CarNote.objects.filter(engineer='Миша')
+            denis = CarNote.objects.filter(engineer='Денис', date__range=(start, finish))
+            kostya = CarNote.objects.filter(engineer='Костя', date__range=(start, finish))
+            andrei = CarNote.objects.filter(engineer='Андрей', date__range=(start, finish))
+            misha = CarNote.objects.filter(engineer='Миша', date__range=(start, finish))
             km_denis, km_kostya, km_andrei, km_misha = 0, 0, 0, 0
             for note in denis:
                 km_denis += note.distance_gps

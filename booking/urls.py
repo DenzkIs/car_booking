@@ -32,11 +32,11 @@ urlpatterns = [
     path('car_day_info/', get_car_day_info, name='car_day_info'),
     path('base/', get_base_template, name='get_base_template'),
     path('statistic/', get_statistic, name='statistic'),
-    # path('grid/', grid_table, name='grid_table'),
+    # path('grid/', grid_table, name='grid_table'),-
     # path('test_celery/', test_celery_daily_task),
     # path('test_mileage/', test_refresh_mileage),
     # path('insert_data/', insert_car_info, name='insert_car_info'),  # использовать для заполнения БД из nav.by
-    # path('insert_from_csv/', insert_from_csv, name='insert_from_csv'),  # использовать для заполнения БД из csv
+    path('insert_from_csv/', insert_from_csv, name='insert_from_csv'),  # использовать для заполнения БД из csv
 
 
 ]
