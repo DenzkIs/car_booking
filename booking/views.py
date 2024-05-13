@@ -111,7 +111,7 @@ def get_two_tables_page(request):
     day_today = datetime.date.today()
     context = {'car_notes': car_notes, 'form_list': page, 'form_list_first': page[:7], 'form_list_second': page[7:],
                'day_today': day_today}
-    return render(request, template_name='base_template2.html', context=context)
+    return render(request, template_name='two_tables.html', context=context)
 
 
 def get_grid_page(request):
