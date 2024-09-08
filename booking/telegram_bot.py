@@ -4,6 +4,7 @@ from .models import CarNote
 
 env_keys = dotenv_values()
 RISOLA_CAR_BOT_TOKEN = env_keys.get('RISOLA_CAR_BOT_TOKEN')
+TG_CHAT_ID = env_keys.get('TG_CHAT_ID')
 bot = telebot.TeleBot(token=RISOLA_CAR_BOT_TOKEN)
 
 DAY = {
@@ -28,17 +29,17 @@ DAY = {
 
 def say_in_chat(note: CarNote, message=''):
     if message:
-        bot.send_message(chat_id='-1001977048993',
+        bot.send_message(chat_id=TG_CHAT_ID,
                          text=f'_---{message}---_\n*{DAY[note.date.weekday()]}* {note.date}\n{note.car} - {note.city}\n{note.engineer}',
                          parse_mode='Markdown')
     else:
-        bot.send_message(chat_id='-1001977048993',
+        bot.send_message(chat_id=TG_CHAT_ID,
                          text=f'*{DAY[note.date.weekday()]}* {note.date}\n{note.car} - {note.city}\n{note.engineer}',
                          parse_mode='Markdown')
 
 
 # bot.polling(none_stop=True, interval=0)
 def mileage_warning(brand, km):
-    bot.send_message(chat_id='-1001977048993',
+    bot.send_message(chat_id=TG_CHAT_ID,
                      text=f'До следующего TO *{brand}*\nосталось *{km:0.0f} км* !!!',
                      parse_mode='Markdown')

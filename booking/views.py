@@ -239,7 +239,7 @@ def insert_car_info(request):
     """
     processed_date = None
     day_nav_info = None
-    notes = CarNote.objects.all().order_by('date').filter(date__gte=datetime.date(2024, 4, 11))
+    notes = CarNote.objects.all().order_by('date').filter(date__gte=datetime.date(2024, 5, 11))
     # notes_2 = []
     # for n in notes:
     #     if n.date == datetime.date.today():
@@ -276,6 +276,7 @@ def insert_car_info(request):
 def insert_from_csv(request):
     path_to_dir = 'D:\Downloads_chrome\cars'
     csv_car_list = os.listdir(path_to_dir)
+    print(csv_car_list)
     notes_list = []
     car_name = ''
     for car in csv_car_list:
@@ -324,7 +325,8 @@ def get_statistic(request):
             kostya = CarNote.objects.filter(engineer='Костя', date__range=(start, finish))
             andrei = CarNote.objects.filter(engineer='Андрей', date__range=(start, finish))
             misha = CarNote.objects.filter(engineer='Миша', date__range=(start, finish))
-            km_denis, km_kostya, km_andrei, km_misha = 0, 0, 0, 0
+            oleg = CarNote.objects.filter(engineer='Олег', date__range=(start, finish))
+            km_denis, km_kostya, km_andrei, km_misha, km_oleg = 0, 0, 0, 0, 0
             for note in denis:
                 km_denis += note.distance_gps
             for note in kostya:
@@ -333,7 +335,9 @@ def get_statistic(request):
                 km_andrei += note.distance_gps
             for note in misha:
                 km_misha += note.distance_gps
-            context = {'form': form, 'km_denis': km_denis, 'km_kostya': km_kostya, 'km_andrei': km_andrei, 'km_misha': km_misha}
+            for note in oleg:
+                km_oleg += note.distance_gps
+            context = {'form': form, 'km_denis': round(km_denis), 'km_kostya': round(km_kostya), 'km_andrei': round(km_andrei), 'km_misha': round(km_misha), 'km_oleg': round(km_oleg)}
             return render(request, template_name='statistic.html', context=context)
     else:
         form = ChooseTimeRange()

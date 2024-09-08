@@ -35,7 +35,7 @@ urlpatterns = [
     # path('grid/', grid_table, name='grid_table'),-
     # path('test_celery/', test_celery_daily_task),
     # path('test_mileage/', test_refresh_mileage),
-    # path('insert_data/', insert_car_info, name='insert_car_info'),  # использовать для заполнения БД из nav.by
+    path('insert_data/', insert_car_info, name='insert_car_info'),  # использовать для заполнения БД из nav.by
     path('insert_from_csv/', insert_from_csv, name='insert_from_csv'),  # использовать для заполнения БД из csv
 
 
